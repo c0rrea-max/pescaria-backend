@@ -1,39 +1,20 @@
-// =============================================================
-// middlewares/loggerMiddleware.js
-// Logger de Requisições — Barraca da Pescaria
-// =============================================================
-
 const loggerMiddleware = (req, res, next) => {
 
-    /* ========================================================
-       DATA E HORA FORMATADA
-    ======================================================== */
+    // Pegamos a hora atual e formatamos como string legível (ex: "10:30:45")
+    const horaAtual = new Date().toLocaleTimeString('pt-BR');
 
-    const agora = new Date();
+    // Mostramos no terminal:
+    //   - O método HTTP (GET, POST, PUT, DELETE)
+    //   - A URL da rota acessada (ex: /api/produtos)
+    // Template string com ${} para inserir as variáveis na mensagem
+    console.log(`[${horaAtual}] 📋 Requisição recebida: ${req.method} ${req.url}`);
 
-    const hora = agora.toLocaleTimeString('pt-BR');
-    const data = agora.toLocaleDateString('pt-BR');
-
-    /* ========================================================
-       LOG PRINCIPAL
-    ======================================================== */
-
-    console.log('\n----------------------------------------');
-    console.log(`📅 ${data} ⏰ ${hora}`);
-    console.log(`📡 ${req.method} ${req.originalUrl}`);
-    console.log(`🌐 IP: ${req.ip}`);
-    console.log(`🧭 User-Agent: ${req.headers['user-agent']}`);
-    console.log('----------------------------------------\n');
-
-    /* ========================================================
-       CONTINUA FLUXO DA REQUISIÇÃO
-    ======================================================== */
-
+    // ⚠️ MUITO IMPORTANTE: next() é obrigatório!
+    // Sem chamar next(), a requisição fica presa aqui e o app trava.
+    // É next() que faz a requisição continuar o caminho até a rota certa.
     next();
 };
 
-/* ============================================================
-   EXPORT
-============================================================ */
-
+// ─── Exportação ───────────────────────────────────────────────
+// Exportamos a função para que o server.js possa importar e usar.
 module.exports = loggerMiddleware;

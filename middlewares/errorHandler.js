@@ -1,70 +1,22 @@
-// =============================================================
-// middlewares/errorHandlerMiddleware.js
-// Middleware Global de Erros — Barraca da Pescaria
-// =============================================================
-
 const errorHandlerMiddleware = (err, req, res, next) => {
 
-    /* ========================================================
-       LOG DO ERRO NO TERMINAL
-    ======================================================== */
+    // Loga o erro no terminal do servidor para o DESENVOLVEDOR ver.
+    // Isso não aparece para o usuário final, só no VS Code!
+    console.error(`❌ Erro detectado: ${err.message}`);
 
-    console.error('\n========================================');
-    console.error('❌ ERRO INTERNO NA API');
-    console.error('📍 Rota:', req.originalUrl);
-    console.error('📌 Método:', req.method);
-    console.error('🕒 Data:', new Date().toLocaleString('pt-BR'));
-    console.error('💥 Mensagem:', err.message);
+    // Retorna uma resposta JSON com:
+    //   - Status HTTP 500 (Internal Server Error — erro interno do servidor)
+    //   - Um objeto JSON com informações do erro
+    res.status(500).json({
+        sucesso: false,
+        mensagem: "Ops! Ocorreu um erro interno no servidor.",
 
-    if(err.stack){
-
-        console.error('\n📚 Stack Trace:\n');
-        console.error(err.stack);
-
-    }
-
-    console.error('========================================\n');
-
-    /* ========================================================
-       STATUS HTTP
-    ======================================================== */
-
-    const statusCode = err.statusCode || 500;
-
-    /* ========================================================
-       RESPOSTA JSON
-    ======================================================== */
-
-    res.status(statusCode).json({
-
-        sucesso:false,
-
-        mensagem:
-
-            statusCode === 404
-
-                ? '❌ Recurso não encontrado.'
-
-                : statusCode === 400
-
-                    ? '⚠️ Dados inválidos enviados.'
-
-                    : '🎣 Ops! Ocorreu um erro interno no servidor.',
-
-        erro:err.message,
-
-        rota:req.originalUrl,
-
-        metodo:req.method,
-
-        timestamp:new Date().toISOString()
-
+        // ⚠️ ATENÇÃO: Em uma aplicação REAL, nunca exponha detalhes do erro
+        // para o usuário (pode revelar informações sensíveis do servidor).
+        // Aqui mandamos o detalhe apenas para fins DIDÁTICOS, para ver na tela!
+        detalhe: err.message
     });
-
 };
 
-/* ============================================================
-   EXPORT
-============================================================ */
-
-module.exports = errorHandlerMiddleware;
+// ─── Exportação ───────────────────────────────────────────────
+module.exports = errorHandlerMiddleware
